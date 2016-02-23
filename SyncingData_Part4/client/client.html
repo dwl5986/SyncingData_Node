@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+		var socket;
+
+    var canvas;
+    var ctx;
+
+    var sendBufferCanvas;
+    var sendBufferCtx;
+
+    function setupBuffer() {
+      sendBufferCanvas = document.createElement('canvas');
+      sendBufferCanvas.height = 200;
+      sendBufferCanvas.width = 200;
+      sendBufferCtx = sendBufferCanvas.getContext('2d');
+
+      var x = Math.floor((Math.random() * 300) + 1);
+      var y = Math.floor((Math.random() * 300) + 1);
+
+      ctx.fillRect(x, y, 50, 50); //draw to screen
+      sendBufferCtx.fillRect(0,0,50,50); //draw to hidden buffer
+
+      var data = {
+        x: x,
+        y: y,
+        height: 50,
+        width: 50,
+        imgData: sendBufferCanvas.toDataURL() //get pixel data from canvas
+      };
+
+      socket.emit('newCanvas', data);
+    }
+
+    function init() {
+      canvas = document.querySelector("#canvas");
+      ctx = canvas.getContext("2d");
+      socket = io.connect();
+
+			socket.on('connect', function () {
+        setupBuffer();
+			});
+
+      socket.on('updateImage', function(data) {
+        var image = new Image();
+
+        image.onload = function() {
+          ctx.save();
+          ctx.globalCompositeOperation = "source-over"; //this is default for canvas
+          ctx.drawImage(image, data.x, data.y, data.width, data.height);
+          ctx.restore();
+        };
+        image.src = data.imgData;
+      });
+    }
+
+    window.onload = init;
+  </script>
+</head>
+<body>
+  <canvas id="canvas" height="500" width="500">Please use an HTML 5 browser</canvas>
+</body>
+</html>

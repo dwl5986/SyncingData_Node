@@ -1,0 +1,22 @@
+{
+  "name": "Syncing_Data",
+  "version": "1.0.0",
+  "description": "Part 2 of Syncing Data Assignment",
+  "main": "./src/server.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "pretest": "jshint ./src",
+    "test": "echo \"tests complete\""
+  },
+  "keywords": [
+    "NPM",
+    "chat",
+    "websockets"
+  ],
+  "author": "Derek Lescarbeau",
+  "license": "ISC",
+  "dependencies": {
+    "jshint": "^2.9.1",
+    "socket.io": "^1.4.5"
+  }
+}
