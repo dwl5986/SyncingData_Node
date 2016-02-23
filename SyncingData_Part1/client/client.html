@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+		var socket;
+
+    function init() {
+      socket = io.connect();
+			socket.on('connect', function () {
+				setInterval(addToScore, 3000);
+			});
+			socket.on('updatePara', function(data) {
+				document.querySelector('#output').innerHTML = 'The server\'s value is ' + data + '.';
+			});
+    }
+
+		function addToScore()
+		{
+		  socket.emit('updateScore', 5);
+		}
+
+    window.onload = init;
+  </script>
+</head>
+<body>
+	<p>For every connection to the server, the value is increased by 5, every 3 seconds.</p>
+	<p id='output'>The server's value is 0.</p>
+</body>
+</html>
